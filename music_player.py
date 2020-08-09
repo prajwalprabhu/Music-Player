@@ -19,7 +19,6 @@ class music_player():
         self.name=None
         self.playing=False
         self.paused=False
-        # self.volume=0
         self.audio_format=[".mp3",".MP3",".wav",".3gp",".aa",".aax",".avi",".ogg"]
         self.root=Tk()
         self.root.title("Music Player")
@@ -47,32 +46,19 @@ class music_player():
         self.previous_button.grid(row=0,column=1)
         self.button=Button(self.button_window,command=self.play,image=self.image)
         self.button.grid(row=0,column=2)
-        
         self.volume_scale=Scale(self.button_window,orient='vertical',variable=self.volume,from_=100,to=0)
         self.volume_scale.grid(row=0,column=4)
         self.next_button=Button(self.button_window,command=self.next,text="Next")
         self.next_button.grid(row=0,column=3)
-
         self.volume_scale.bind('<ButtonRelease>',self.set_volume)
-        
         self.volume_scale.set(self.volume)
         if not self.last_played ==None:
             self.play(selected=self.last_played) 
         self.root.mainloop()
-        print(self.root)
         self.exited=True
         self.dump_data()
-        # self.play()
         mixer_music.stop()
-        # self.thread.join()
-        # self.thread.stop()
-        # messagebox
         showinfo("Exit??","Closing The Player")
-
-        # a=Thread(target=self.qwe)
-        # a.start()
-        # a.join()
-
             
             
                
@@ -82,7 +68,7 @@ class music_player():
         if a==None:
             a=askdirectory(initialdir="/")
             self.file_dir.append(a)
-        for Directory_path,directory_name,file_name in walk(a):
+        for Directory_path,_,file_name in walk(a):
             file_name_list.append([Directory_path,file_name])
             pass
         for dir_n,file_list in file_name_list:
@@ -94,7 +80,6 @@ class music_player():
                     self.file_name_dir[name]=normcase(dir_n)
                     self.play_list.append(name)
     def play(self,event=None,selected=None):
-        # name=self.list.get("anchor")
         if selected is None:
             index=self.list.curselection()
             name=self.play_list[index[0]]
@@ -105,7 +90,6 @@ class music_player():
             index=self.play_list.index(name)
             self.list.see(index)
 
-            # self.list.select_set(name)
             self.list.selection_set(index)
         mixer.init()
         if self.playing:
@@ -131,21 +115,13 @@ class music_player():
                         mixer_music.load(file)
                         mixer_music.set_volume(self.volume)
                         mixer_music.play()
-                        # mixer_music.set_endevent(1)
-                        # Thread(target=self.check_end_event)
-                        # print(a)
                         self.thread=Thread(target=self.check_end_position)
                         self.thread.start()
-                        # print(a)
                         self.last_played=file
-                        print(mixer_music.get_busy(),"Busy")
                         self.name=name
-
                         self.title_label["text"]=name
-                        # self.check_end_position()
                     else:
                         
-                        print(mixer_music.get_busy(),"Busy")
                         mixer_music.unpause()
                         mixer_music.set_volume(self.volume)
                     self.playing=True
@@ -174,14 +150,11 @@ class music_player():
             with open(join(getcwd(),"Data\\music_player.json"),"w") as f:
                 self.json_data["path"]=self.file_dir
                 self.json_data["last_played"]=self.last_played
-                print(self.json_data)
                 dump(self.json_data,f,indent=4,sort_keys=1)
-                print("try")
         except FileNotFoundError:
                 makedirs(join(getcwd(),"Data"))
                 with open(join(getcwd(),"Data\\music_player.json"),"w") as f:
                     self.json_data["path"]=self.file_dir
-                    print(self.json_data["path"])
                     dump(self.json_data,f,indent=4,sort_keys=1) 
     def next(self,event=None):
         a=self.list.curselection()
@@ -202,31 +175,19 @@ class music_player():
         end=audio.info.length
         self.end_time=round(end/60,3)
         print(self.end_time)
-        # self.position_Scale.configure(from_=0.0,to=self.end_time)
         try:
             print("Thread try")
             while not self.exited:
                 pos=mixer_music.get_pos()
-                # print(pos)
                 end_time=round(round(round(pos/1000,2)//60,2)+round(round(pos/1000,2)%60,2)/100,3)
-                print(end_time)
-                # return end_time
-
                 if type(end_time) == float or type(end_time) == int:
                     self.progresslabel["text"] = f"{end_time}/{self.end_time}"
                     
                 else:
                     return True
-            print("tried")
             return True
         except Exception as e:
-            print(e)
-            print("except")
             return False    
         
-        return None
-    def qwe(self):
-        sleep(10)
-        print("done")
 
 music_player()
