@@ -348,3 +348,7 @@ class music_player():
         pass
 
 music_player()
+
+def Hi():
+    print("Hi)
+
