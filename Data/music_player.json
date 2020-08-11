@@ -1,6 +1,24 @@
 {
-    "last_played": "d:\\songs\\Badshah_-_Paagal(256k).mp3",
+    "last_played": "d:\\songs\\(16716) Milo Na Tum Toh Hum Ghabraye - Gajendra Verma _ Ft. Tina Ahuja _ Official Video _ Lata Mangeshkar - YouTube.MP3",
     "path": [
+        "C:/Users/Prabhu/Downloads/Music",
         "D:/songs"
-    ]
+    ],
+    "play_list": {
+        "tas": [
+            "c:\\users\\prabhu\\downloads\\music\\(419) Feelingaa _ Kay Vee Singh _ Nisha Bhatt _ Valentine Special _ Latest new punjabi songs 2019 - YouTube.MP3"
+        ],
+        "test": [
+            "c:\\users\\prabhu\\downloads\\music\\(419) Feelingaa _ Kay Vee Singh _ Nisha Bhatt _ Valentine Special _ Latest new punjabi songs 2019 - YouTube.MP3",
+            "d:\\songs\\(16670) VAIL (OFFICIAL VIDEO) Mankirt Aulakh Ft. Nimrat Khaira _ Avvy Sra _ Shree Brar _ Arvindr Khaira - YouTube.MP3",
+            "d:\\songs\\(16670) Zara Thehro Song _ Amaal Mallik, Armaan Malik, Tulsi Kumar _Rashmi V_ Mehreen Pirzada_ Bhushan Kumar - YouTube.MP3",
+            "d:\\songs\\(16716) Milo Na Tum Toh Hum Ghabraye - Gajendra Verma _ Ft. Tina Ahuja _ Official Video _ Lata Mangeshkar - YouTube.MP3",
+            "d:\\songs\\(316) LOVE MASHUP 2020 _ HINDI ROMANTIC MASHUP _ BEST OF 2020 LOVE SONGS MASHUP _ DJ Harshal, Yohan - YouTube.MP3",
+            "d:\\songs\\(442) Punjabi Love Mashup 2020 _ Harnish Official _ Naresh Parmar _ Latest Punjabi Mashup - YouTube.MP3",
+            "d:\\songs\\AE VATHAM.mp3",
+            "d:\\songs\\Alarm_Clock_Beep(256k).mp3"
+        ]
+    },
+    "pos": 4309,
+    "volume": 21
 }
