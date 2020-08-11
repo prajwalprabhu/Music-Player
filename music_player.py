@@ -349,6 +349,5 @@ class music_player():
 
 music_player()
 
-def Hi():
-    print("Hi)
+
 
