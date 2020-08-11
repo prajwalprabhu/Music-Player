@@ -1,9 +1,9 @@
 from os import walk,getcwd,makedirs,startfile
-from os.path import normcase,splitext,join,split
+from os.path import normcase,splitext,join,split,basename
 from pygame import mixer_music,mixer,error
 from tkinter import *
 from tkinter.filedialog import *
-from tkinter.messagebox import  showinfo
+from tkinter.messagebox import  askyesno, showerror, showinfo
 from time import sleep
 from json import load,dump,JSONDecodeError
 from threading import Thread
@@ -15,6 +15,8 @@ class music_player():
         self.play_list=[]
         self.file_dir=[]
         self.file_name_dir={}
+        self.udplay_list={}
+        # print(type(self.udplay_list),"udplay_list")
         self.exited=False
         self.name=None
         self.playing=False
@@ -35,10 +37,14 @@ class music_player():
         self.root.bind("<space>",self.play)
         File=Menu(menu)
         File.add_command(label="Add Folder ctrl+shift+o",command=self.open_folder)
-        menu.add_cascade(label="File",menu=File)
-        # closemenu=Menu(menu)
         File.add_command(label="Close Floder",command=self.close_floder)
-        # menu.add_cascade(label="Close")
+        playlist_menu=Menu(menu)
+        playlist_menu.add_command(label="CreatePlaylist",command=self.creat_playlist)
+        list_menu=Menu(menu)
+
+        playlist_menu.add_cascade(label="PLay Playlist",menu=list_menu)
+        menu.add_cascade(label="File",menu=File)
+        menu.add_cascade(label="Playlist",menu=playlist_menu)
         self.list_window.pack(side=TOP)
         self.title_label=Label(self.root)
         self.title_label.pack()  
@@ -48,11 +54,17 @@ class music_player():
         self.button_window.pack(side=BOTTOM)
         self.list=Listbox(self.list_window,width=30)
         self.list.grid(row=0,column=0)
-        self.list.bind("<Button-1>",self.play)
+        repeat=True
+        self.list.bind("<Button-1>",self.play2)
         # self.list.bind("<Key-o>",lambda : self.play(repeat=True))
         self.get_data()
         if self.volume == None:
             self.volume=25
+        if self.udplay_list==None or type(self.udplay_list) ==list:
+            self.udplay_list={}
+        for pllist in self.udplay_list:
+            list_menu.add_command(label=pllist,command=lambda :self.play_play_list(pllist))
+        
 
         
         self.image4=PhotoImage(file=join(getcwd(),"img\\previous.png"))
@@ -85,9 +97,13 @@ class music_player():
             
             
                
-    def open_folder(self,event=None,a=None):
+    def open_folder(self,event=None,a=None,list_=None):
         file_name_list=[]
-        
+        if list_==None:
+            list=self.list
+        else:
+            list=list_
+            # self.play_list=[]
         if a==None:
             a=askdirectory(initialdir="/")
             self.file_dir.append(a)
@@ -99,10 +115,10 @@ class music_player():
                 _,exe=splitext(name)
                 if exe in self.audio_format:
 
-                    self.list.insert(END,name)
+                    list.insert(END,name)
                     self.file_name_dir[name]=normcase(dir_n)
                     self.play_list.append(name)
-            self.list.select_anchor(len(self.play_list))
+            list.select_anchor(len(self.play_list))
             #print(self.list.size(),"size")
     def play(self,event=None,selected=None,repeat=False):
         
@@ -176,6 +192,7 @@ class music_player():
                 self.first_played=self.last_played
                 self.pos=self.json_data["pos"]
                 self.volume=self.json_data["volume"]
+                self.udplay_list=self.json_data["play_list"]
                 for file in self.file_dir:
                     self.open_folder(a=file)
         except JSONDecodeError:
@@ -195,6 +212,7 @@ class music_player():
                 self.json_data["last_played"]=self.last_played
                 self.json_data["pos"]=self.pos
                 self.json_data["volume"]=self.volume
+                self.json_data["play_list"]=self.udplay_list
                 dump(self.json_data,f,indent=4,sort_keys=1)
         except FileNotFoundError:
                 makedirs(join(getcwd(),"Data"))
@@ -203,6 +221,7 @@ class music_player():
                     self.json_data["last_played"]=self.last_played
                     self.json_data["pos"]=self.pos
                     self.json_data["volume"]=self.volume
+                    self.json_data["play_list"]=self.udplay_list
                     dump(self.json_data,f,indent=4,sort_keys=1) 
     def next(self,event=None):
     
@@ -270,15 +289,62 @@ class music_player():
             self.open_folder(a=file)
         self.close_window.destroy()
         # self.close_folder()
-    # def play2(self,event=None):
+    def play2(self,event=None):
+        self.play()
+        self.play()
+    def creat_playlist(self):
+        def add():
+            a=self.play_list_list.curselection()
+            play_name=self.play_list_name.get()
+            if not self.udplay_list.__contains__(play_name):
+                a=askyesno("PLaylit",f"The Play list {play_name} Already exist ")
+                if a:
+                    self.udplay_list[play_name]=None
+                else:
+                    return None
+            udlist=[]
+            for index in a:
+                    
+                # index=self.list.curselection()
+                name=self.play_list[index]
+                file=join(self.file_name_dir[name],name)
+                # self.list.selection_set(index)
+                udlist.append(file)
+            self.udplay_list[play_name]=udlist
+            showinfo("Created Playlist",f"Successfully Created Playlist {play_name}")
+            self.play_list_window.destroy()
+                
+            pass
 
+        def continuee():
+            self.play_list_list=Listbox(self.play_list_window,width=30,selectmode=MULTIPLE)
+            self.play_list_list.pack()
+            Label(self.play_list_window,text="Select the Songs to add to the playlist").pack()
+            
+            for file in self.file_dir:
+                self.open_folder(a=file,list_=self.play_list_list)
+            Button(self.play_list_window,text="Add to playlist",command=add).pack()
+        
+        self.play_list_window=Tk()
+        Label(self.play_list_window,text="Enter Playlist name").pack()
+        self.play_list_name=Entry(self.play_list_window)
+        self.play_list_name.pack()
+        Button(self.play_list_window,text="Continue",command=continuee).pack()
+        
+    def play_play_list(self,key_):
+        list_=self.udplay_list[key_]
+        self.list.delete(0,END)
+        del self.play_list
+        del self.file_name_dir
+        self.play_list=[]
+        self.file_name_dir={}
+        for name in list_:
+            dir_name,bname=split(name)
+            self.list.insert(END,bname)
+            self.file_name_dir[bname]=normcase(dir_name)
+            self.play_list.append(bname)
+
+        
+        pass
 
 music_player()
-# lambda :#print("MusicPlayer")
-def image(img):
-    load=Image.open(img)
-    render=ImageTk(load)
-    return render
-
-# img=image(join(getcwd(),"img\\play.png"))
-# Label(image=img)
