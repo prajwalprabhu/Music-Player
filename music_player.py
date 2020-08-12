@@ -1,5 +1,5 @@
-from os import walk,getcwd,makedirs
-from os.path import normcase,splitext,join,split,basename
+from os import walk,getcwd,makedirs,name
+from os.path import normcase,splitext,join,split,basename,isdir
 from pygame import mixer_music,mixer,error
 from tkinter import *
 from tkinter.filedialog import *
@@ -27,6 +27,7 @@ class music_player():
         self.root=Tk()
         self.speak_=BooleanVar()
         self.root.title("Music Player")
+        # self.root.iconbitmap("/home/cooldood/Desktop/tkicon.ico")
         self.root.geometry("250x300")
         self.list_window=Frame(self.root)
         menu=Menu(self.root)
@@ -40,9 +41,9 @@ class music_player():
         File.add_command(label="Close Floder",command=self.close_floder)
         playlist_menu=Menu(menu)
         playlist_menu.add_command(label="CreatePlaylist",command=self.creat_playlist)
-        list_menu=Menu(menu)
+        self.list_menu=Menu(menu)
 
-        playlist_menu.add_cascade(label="PLay Playlist",menu=list_menu)
+        playlist_menu.add_cascade(label="PLay Playlist",menu=self.list_menu)
         menu.add_cascade(label="File",menu=File)
         menu.add_cascade(label="Playlist",menu=playlist_menu)
         self.list_window.pack(side=TOP)
@@ -63,7 +64,7 @@ class music_player():
         if self.udplay_list==None or type(self.udplay_list) ==list:
             self.udplay_list={}
         for pllist in self.udplay_list:
-            list_menu.add_command(label=pllist,command=lambda :self.play_play_list(pllist))
+            self.list_menu.add_command(label=pllist,command=lambda :self.play_play_list(pllist))
         
 
         
@@ -185,7 +186,11 @@ class music_player():
             self.play()
     def get_data(self):
         try:
-            with open(normcase(join(getcwd(),"Data/music_player.json")),"r") as f:
+            if name =="nt":
+                file=join(getcwd(),"Data\\music_player.json")
+            else:
+                file=join(getcwd(),"Data/music_player.json")
+            with open(normcase(file),"r") as f:
                 self.json_data=load(f)
                 self.file_dir=self.json_data["path"]
                 self.last_played=self.json_data["last_played"]
@@ -195,10 +200,18 @@ class music_player():
                 self.udplay_list=self.json_data["play_list"]
                 for file in self.file_dir:
                     self.open_folder(a=file)
-        except JSONDecodeError:
-            with open(normcase(join(getcwd(),"Data/music_player.json")),"w") as f:
+        except Exception as e:
+            # if e is FileNotFoundError:
+            if isdir(join(getcwd(),"Data")):
+                makedirs(join(getcwd(),"Data"))
+            if name =="nt":
+                file=join(getcwd(),"Data\\music_player.json")
+            else:
+                file=join(getcwd(),"Data/music_player.json")
+            with open(normcase(file),"w") as f:
                 f.write(r'{"path":[],"last_played":null,"pos":null,"volume":null,"play_list":{}}')
             self.get_data()
+            # elif JSONDecodeError:
 
     def set_volume(self,event):
         self.volume=self.volume_scale.get()
@@ -206,7 +219,11 @@ class music_player():
         self.volume_scale.bell()
     def dump_data(self):
         try:
-            with open(normcase(join(getcwd(),"Data/music_player.json")),"w") as f:
+            if name =="nt":
+                file=join(getcwd(),"Data\\music_player.json")
+            else:
+                file=join(getcwd(),"Data/music_player.json")
+            with open(normcase(file),"w") as f:
                 self.json_data["path"]=self.file_dir
                 
                 self.json_data["last_played"]=self.last_played
@@ -216,7 +233,14 @@ class music_player():
                 dump(self.json_data,f,indent=4,sort_keys=1)
         except FileNotFoundError:
                 makedirs(join(getcwd(),"Data"))
-                with open(normcase(join(getcwd(),"Data/music_player.json")),"w") as f:
+                if name =="nt":
+                    file=join(getcwd(),"Data\\music_player.json")
+                else:
+                    file=join(getcwd(),"Data/music_player.json")
+                with open(normcase(file),"w") as f:
+                    f.write(r'{"path":[],"last_played":null,"pos":null,"volume":null,"play_list":{}}')
+            
+                with open(normcase(file),"w") as f:
                     self.json_data["path"]=self.file_dir
                     self.json_data["last_played"]=self.last_played
                     self.json_data["pos"]=self.pos
@@ -296,7 +320,7 @@ class music_player():
         def add():
             a=self.play_list_list.curselection()
             play_name=self.play_list_name.get()
-            if not self.udplay_list.__contains__(play_name):
+            if self.udplay_list.__contains__(play_name):
                 a=askyesno("PLaylit",f"The Play list {play_name} Already exist ")
                 if a:
                     self.udplay_list[play_name]=None
@@ -310,7 +334,9 @@ class music_player():
                 file=join(self.file_name_dir[name],name)
                 # self.list.selection_set(index)
                 udlist.append(file)
+        
             self.udplay_list[play_name]=udlist
+            self.list_menu.add_command(label=play_name,command=lambda :self.play_play_list(play_name))
             showinfo("Created Playlist",f"Successfully Created Playlist {play_name}")
             self.play_list_window.destroy()
                 
