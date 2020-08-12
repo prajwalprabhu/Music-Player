@@ -1,4 +1,4 @@
-from os import walk,getcwd,makedirs,startfile
+from os import walk,getcwd,makedirs
 from os.path import normcase,splitext,join,split,basename
 from pygame import mixer_music,mixer,error
 from tkinter import *
@@ -9,7 +9,7 @@ from json import load,dump,JSONDecodeError
 from threading import Thread
 from mutagen.mp3 import MP3
 from pyttsx3 import speak
-from PIL import Image,ImageTk
+# from PIL import Image,ImageTk
 class music_player():
     def __init__(self):
         self.play_list=[]
@@ -22,7 +22,7 @@ class music_player():
         self.playing=False
         self.paused=False
         self.audio_format=[".mp3",".MP3",".wav",".3gp",".aa",".aax",".avi",".ogg"]
-        # loadd=Image.open(join(getcwd(),"img\\play.png"))
+        # loadd=Image.open(join(getcwd(),"img/play.png"))
         # self.play_img=ImageTk.PhotoImage(loadd)
         self.root=Tk()
         self.speak_=BooleanVar()
@@ -67,16 +67,16 @@ class music_player():
         
 
         
-        self.image4=PhotoImage(file=join(getcwd(),"img\\previous.png"))
-        # startfile(join(getcwd(),"img\\previous.png"))
+        self.image4=PhotoImage(file=join(getcwd(),"img/previous.png"))
+        # startfile(join(getcwd(),"img/previous.png"))
         self.previous_button=Button(self.button_window,command=self.previous,image=self.image4)
         self.previous_button.grid(row=0,column=1)
-        self.image2=PhotoImage(file=join(getcwd(),"img\\play.png"))
+        self.image2=PhotoImage(file=join(getcwd(),"img/play.png"))
         self.button=Button(self.button_window,command=self.play,image=self.image2)
         self.button.grid(row=0,column=2)
         self.volume_scale=Scale(self.button_window,orient='vertical',variable=self.volume,from_=100,to=0)
         self.volume_scale.grid(row=0,column=5)
-        self.image3=PhotoImage(file=join(getcwd(),"img\\next.png"))
+        self.image3=PhotoImage(file=join(getcwd(),"img/next.png"))
         self.next_button=Button(self.button_window,command=self.next,image=self.image3)
         self.next_button.grid(row=0,column=3)
         self.check_button=Checkbutton(self.button_window,text="Say name",variable=self.speak_,onvalue=True,offvalue=False)
@@ -138,7 +138,7 @@ class music_player():
 
         mixer.init()
         if self.playing:
-            self.image=PhotoImage(file=join(getcwd(),"img\\play.png"))
+            self.image=PhotoImage(file=join(getcwd(),"img/play.png"))
             self.button.config(image=self.image)
             mixer_music.pause()
             mixer_music.set_volume(self.volume)
@@ -151,7 +151,7 @@ class music_player():
         
         else:
             if len(file)>4:
-                self.image=PhotoImage(file=join(getcwd(),"img\\pause.png"))
+                self.image=PhotoImage(file=join(getcwd(),"img/pause.png"))
                 self.button.config(image=self.image)
                
                 try:
@@ -185,7 +185,7 @@ class music_player():
             self.play()
     def get_data(self):
         try:
-            with open(join(getcwd(),"Data\music_player.json"),"r") as f:
+            with open(normcase(join(getcwd(),"Data/music_player.json")),"r") as f:
                 self.json_data=load(f)
                 self.file_dir=self.json_data["path"]
                 self.last_played=self.json_data["last_played"]
@@ -196,8 +196,8 @@ class music_player():
                 for file in self.file_dir:
                     self.open_folder(a=file)
         except JSONDecodeError:
-            with open(join(getcwd(),"Data\music_player.json"),"w") as f:
-                f.write(r'{"path":[],"last_played":null}')
+            with open(normcase(join(getcwd(),"Data/music_player.json")),"w") as f:
+                f.write(r'{"path":[],"last_played":null,"pos":null,"volume":null,"play_list":{}}')
             self.get_data()
 
     def set_volume(self,event):
@@ -206,7 +206,7 @@ class music_player():
         self.volume_scale.bell()
     def dump_data(self):
         try:
-            with open(join(getcwd(),"Data\\music_player.json"),"w") as f:
+            with open(normcase(join(getcwd(),"Data/music_player.json")),"w") as f:
                 self.json_data["path"]=self.file_dir
                 
                 self.json_data["last_played"]=self.last_played
@@ -216,7 +216,7 @@ class music_player():
                 dump(self.json_data,f,indent=4,sort_keys=1)
         except FileNotFoundError:
                 makedirs(join(getcwd(),"Data"))
-                with open(join(getcwd(),"Data\\music_player.json"),"w") as f:
+                with open(normcase(join(getcwd(),"Data/music_player.json")),"w") as f:
                     self.json_data["path"]=self.file_dir
                     self.json_data["last_played"]=self.last_played
                     self.json_data["pos"]=self.pos
