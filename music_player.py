@@ -27,7 +27,10 @@ class music_player():
         self.root=Tk()
         self.speak_=BooleanVar()
         self.root.title("Music Player")
-        # self.root.iconbitmap("/home/cooldood/Desktop/tkicon.ico")
+        if name=="nt":
+            self.root.iconbitmap(normcase(join(getcwd(),"img\\tkicon.ico")))
+        else:
+            self.root.iconbitmap(normcase(join(getcwd(),"img/tkicon.ico")))
         self.root.geometry("250x300")
         self.list_window=Frame(self.root)
         menu=Menu(self.root)
@@ -63,6 +66,11 @@ class music_player():
             self.volume=25
         if self.udplay_list==None or type(self.udplay_list) ==list:
             self.udplay_list={}
+        def main_playlist():
+            self.list.delete(0,END)
+            
+            self.get_data()
+        self.list_menu.add_command(label="Main",command=main_playlist) 
         for pllist in self.udplay_list:
             self.list_menu.add_command(label=pllist,command=lambda :self.play_play_list(pllist))
         
@@ -120,6 +128,7 @@ class music_player():
                     self.file_name_dir[name]=normcase(dir_n)
                     self.play_list.append(name)
             list.select_anchor(len(self.play_list))
+        
             #print(self.list.size(),"size")
     def play(self,event=None,selected=None,repeat=False):
         
@@ -188,8 +197,10 @@ class music_player():
         try:
             if name =="nt":
                 file=join(getcwd(),"Data\\music_player.json")
+                print(file)
             else:
                 file=join(getcwd(),"Data/music_player.json")
+                print(file)
             with open(normcase(file),"r") as f:
                 self.json_data=load(f)
                 self.file_dir=self.json_data["path"]
@@ -202,7 +213,7 @@ class music_player():
                     self.open_folder(a=file)
         except Exception as e:
             # if e is FileNotFoundError:
-            if isdir(join(getcwd(),"Data")):
+            if e is FileNotFoundError:
                 makedirs(join(getcwd(),"Data"))
             if name =="nt":
                 file=join(getcwd(),"Data\\music_player.json")
@@ -325,6 +336,7 @@ class music_player():
                 if a:
                     self.udplay_list[play_name]=None
                 else:
+                    self.play_list_window.destroy()
                     return None
             udlist=[]
             for index in a:

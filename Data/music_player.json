@@ -1,9 +1,19 @@
 {
-    "last_played": "/home/cooldood/Desktop/songs/(16670) Zara Thehro Song _ Amaal Mallik, Armaan Malik, Tulsi Kumar _Rashmi V_ Mehreen Pirzada_ Bhushan Kumar - YouTube.MP3",
+    "last_played": "d:\\songs\\(316) LOVE MASHUP 2020 _ HINDI ROMANTIC MASHUP _ BEST OF 2020 LOVE SONGS MASHUP _ DJ Harshal, Yohan - YouTube.MP3",
     "path": [
-        "/home/cooldood/Desktop/songs"
+        "D:/songs"
     ],
-    "play_list": {},
-    "pos": 2515,
+    "play_list": {
+        "test": [
+            "d:\\songs\\(16670) Zara Thehro Song _ Amaal Mallik, Armaan Malik, Tulsi Kumar _Rashmi V_ Mehreen Pirzada_ Bhushan Kumar - YouTube.MP3",
+            "d:\\songs\\(16716) The Love Mashup - Atif Aslam & Arijit Singh 2018 _ By DJ RHN ROHAN _ Is this love or pain .MP3",
+            "d:\\songs\\(16829) Tujhse Mann nahi hai karta Tera Bas Mujhe Jeene Na De Jeene Na De Tera Bas Mujhe Jeene Na De Jeene N - YouTube.MP3",
+            "d:\\songs\\(316) LOVE MASHUP 2020 _ HINDI ROMANTIC MASHUP _ BEST OF 2020 LOVE SONGS MASHUP _ DJ Harshal, Yohan - YouTube.MP3",
+            "d:\\songs\\(406) NIMRAT KHAIRA  Sohne Sohne Suit (Official Video) Harj Nagra _ Sukh Sanghera _ New Punjabi Song 2020 - YouTube.MP3",
+            "d:\\songs\\ARJIT SINGH - YouTube.MP3",
+            "d:\\songs\\ARMY.mp3"
+        ]
+    },
+    "pos": 8730,
     "volume": 25
 }
