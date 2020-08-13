@@ -27,8 +27,8 @@ class music_player():
         self.root.title("Music Player")
         if name=="nt":
             self.root.iconbitmap(normcase(join(getcwd(),"img\\tkicon.ico")))
-        else:
-            self.root.iconbitmap(normcase(join(getcwd(),"img/tkicon.ico")))
+        # else:
+        #     self.root.iconbitmap(normcase(join(getcwd(),"img/tkicon.ico")))
         self.root.geometry("250x300")
         self.list_window=Frame(self.root)
         self.list_window.pack(side=TOP)
@@ -301,6 +301,9 @@ class music_player():
             self.close_window.destroy()
         self.close_window=Toplevel()
         self.radio_value=IntVar()
+        if name=="nt":
+            self.close_window.iconbitmap(normcase(join(getcwd(),"img\\tkicon.ico")))
+        
         # self.radio_value.set("D")
         for vlue,file in enumerate(self.file_dir):
             # print(file)
@@ -351,6 +354,9 @@ class music_player():
             Button(self.play_list_window,text="Add to playlist",command=add).pack()
         
         self.play_list_window=Toplevel()
+        if name=="nt":
+            self.play_list_window.iconbitmap(normcase(join(getcwd(),"img\\tkicon.ico")))
+        
         Label(self.play_list_window,text="Enter Playlist name").pack()
         self.play_list_name=Entry(self.play_list_window)
         self.play_list_name.pack()
