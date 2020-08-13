@@ -27,8 +27,6 @@ class music_player():
         self.root.title("Music Player")
         if name=="nt":
             self.root.iconbitmap(normcase(join(getcwd(),"img\\tkicon.ico")))
-        # else:
-        #     self.root.iconbitmap(normcase(join(getcwd(),"img/tkicon.ico")))
         self.root.geometry("250x300")
         self.list_window=Frame(self.root)
         self.list_window.pack(side=TOP)
@@ -285,9 +283,7 @@ class music_player():
      
     def close_floder(self):
         def remove_folder(value):
-            print(self.file_dir.pop(self.radio_value.get()))
-            print(self.radio_value.get(),"Button")
-            print(value,"value")
+            self.file_dir.pop(self.radio_value.get())
             self.list.delete(0,END)
             for file in self.file_dir:
                 self.open_folder(a=file)
@@ -303,21 +299,11 @@ class music_player():
         self.radio_value=IntVar()
         if name=="nt":
             self.close_window.iconbitmap(normcase(join(getcwd(),"img\\tkicon.ico")))
-        
-        # self.radio_value.set("D")
         for vlue,file in enumerate(self.file_dir):
-            # print(file)
             self.radio_button=Radiobutton(self.close_window,variable=self.radio_value,value=vlue,text=file)
             self.radio_button.pack(anchor=W)
-            # print(self.radio_value.get())
-            # self.radio_value.set(vlue)
-            # print(vlue)
         Button(self.close_window,text="Remove",command=lambda:remove_folder(self.radio_value.get())).pack()
         pass
-                # from tkinter import *
-        # %
-        # from tkinter import *
-        # root=Tk()
         
     def play2(self,event=None):
         self.play()
