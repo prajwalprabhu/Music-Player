@@ -12,7 +12,7 @@
  > You have *.exe file
 
  >You have msi Installer
-
+["Download "](https://github.com/prajwalprabhu/Music-Player/blob/master/Music-Player-1.0-win32.msi?raw=true)
 __________________
 ####################Thank You ################################ 
  
