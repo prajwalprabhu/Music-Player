@@ -1,16 +1,17 @@
-from os import walk,getcwd,makedirs,name
-from os.path import normcase,splitext,join,split,basename,isdir
+from os import walk,getcwd,makedirs,name,getlogin
+from os.path import normcase,splitext,join,split,isdir,isfile
 from pygame import mixer_music,mixer,error
 from tkinter import *
 from tkinter.filedialog import *
-from tkinter.messagebox import  askyesno, showerror, showinfo
-from time import sleep
-from json import load,dump,JSONDecodeError
+from tkinter.messagebox import  askyesno, showinfo
+from json import load,dump
 from threading import Thread
 from mutagen.mp3 import MP3
 from pyttsx3 import speak
 class music_player():
     def __init__(self):
+        login=getlogin()
+        self.DATA=(f"C:\\Users\\{login}\\AppData\\Roaming\\Music-Player\\Data")
         self.play_list=[]
         self.file_dir=[]
         self.file_name_dir={}
@@ -133,7 +134,7 @@ class music_player():
             index=self.list.curselection()
             try:
                 name=self.play_list[index[0]]
-            except:
+            except Exception as e:
                 return None
             file=join(self.file_name_dir[name],name)
             self.list.selection_set(index)
@@ -162,13 +163,17 @@ class music_player():
                     if not self.paused or self.name != name:
                         if self.speak_.get():
                             speak(f"Playing {name}")
-                        mixer_music.load(file)
+                        try:
+                            mixer_music.load(file)
+                        except Exception as e:
+                            mixer.init()
+                            mixer_music.load(file)
+                            return None
                         mixer_music.set_volume(self.volume)
                         mixer_music.play() 
                         if self.first_played !=None:
                             mixer_music.set_pos(self.pos)
                             self.first_played=None
-                        mixer_music.play()
                         self.last_played=file
                         self.thread=Thread(target=self.check_end_position)
                         self.thread.start()
@@ -184,11 +189,8 @@ class music_player():
             self.play()
     def get_data(self):
         try:
-            if name =="nt":
-                file=join(getcwd(),"Data\\music_player.json")
-            else:
-                file=join(getcwd(),"Data/music_player.json")
-            with open(normcase(file),"r") as f:
+            file=f"{self.DATA}\\music_player.json"
+            with open(file,"r") as f:
                 self.json_data=load(f)
                 self.file_dir=self.json_data["path"]
                 self.last_played=self.json_data["last_played"]
@@ -199,12 +201,10 @@ class music_player():
                 for file in self.file_dir:
                     self.open_folder(a=file)
         except Exception as e:
-            if e is FileNotFoundError:
-                makedirs(join(getcwd(),"Data"))
-            if name =="nt":
-                file=join(getcwd(),"Data\\music_player.json")
-            else:
-                file=join(getcwd(),"Data/music_player.json")
+            file=normcase(join(self.DATA,"music_player.json"))
+            if not isdir(self.DATA):
+                makedirs(self.DATA)
+            
             with open(normcase(file),"w") as f:
                 f.write(r'{"path":[],"last_played":null,"pos":null,"volume":null,"play_list":{}}')
             self.get_data()
@@ -215,27 +215,20 @@ class music_player():
         self.volume_scale.bell()
     def dump_data(self):
         try:
-            if name =="nt":
-                file=join(getcwd(),"Data\\music_player.json")
-            else:
-                file=join(getcwd(),"Data/music_player.json")
+            file=normcase(join(self.DATA,"music_player.json"))
             with open(normcase(file),"w") as f:
                 self.json_data["path"]=self.file_dir
-                
                 self.json_data["last_played"]=self.last_played
                 self.json_data["pos"]=self.pos
                 self.json_data["volume"]=self.volume
                 self.json_data["play_list"]=self.udplay_list
                 dump(self.json_data,f,indent=4,sort_keys=1)
-        except FileNotFoundError:
-                makedirs(join(getcwd(),"Data"))
-                if name =="nt":
-                    file=join(getcwd(),"Data\\music_player.json")
-                else:
-                    file=join(getcwd(),"Data/music_player.json")
+        except Exception as e:
+            if e is FileNotFoundError:
+                file=normcase(join(self.DATA,"music_player.json"))
+                makedirs(file)
                 with open(normcase(file),"w") as f:
                     f.write(r'{"path":[],"last_played":null,"pos":null,"volume":null,"play_list":{}}')
-            
                 with open(normcase(file),"w") as f:
                     self.json_data["path"]=self.file_dir
                     self.json_data["last_played"]=self.last_played
